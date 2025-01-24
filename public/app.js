@@ -17,7 +17,7 @@ document.getElementById('search-btn').addEventListener('click', async () => {
         const { latitude, longitude } = position.coords;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/places?lat=${latitude}&lng=${longitude}&radius=${radius}&keyword=${keyword}`);
+            const response = await fetch(`http://localhost:5000/api/places?lat=${latitude}&lng=${longitude}&radius=${radius*1000}&keyword=${keyword}`);
             const places = await response.json();
 
             const placesList = document.getElementById('places-list');
