@@ -12,6 +12,11 @@ body {
   color: #333;
   line-height: 1.6;
   padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 /* Header */
@@ -32,7 +37,7 @@ h2 {
 /* Form Container */
 #form-container {
   max-width: 600px;
-  margin: 0 auto 30px;
+  width: 100%;
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
@@ -79,7 +84,7 @@ button:hover {
 /* Results */
 #results {
   max-width: 800px;
-  margin: 30px auto;
+  width: 100%;
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
