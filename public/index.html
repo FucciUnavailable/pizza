@@ -8,10 +8,10 @@
 </head>
 <body>
   <h1>Find Restaurants Nearby</h1>
-  
+  <h2>Inspired By Gene's Coeur d'Alene Pizza Hunt!</h2>
   <div id="form-container">
-    <label for="radius">Radius (Km):</label>
-    <input type="number" id="radius" placeholder="Enter radius">
+    <label for="radius">Radius (Km): (10km = 6.2mi)</label>
+    <input type="number" id="radius" placeholder="Enter radius" min="1" max="20">
     <label for="keyword">Keyword:</label>
     <input type="text" id="keyword" placeholder="e.g., pizza, sushi">
     <button id="search-btn">Search</button>

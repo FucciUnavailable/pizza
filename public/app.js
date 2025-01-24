@@ -30,7 +30,8 @@ document.getElementById('search-btn').addEventListener('click', async () => {
 
             places.forEach(place => {
                 const li = document.createElement('li');
-                li.innerHTML = `<strong>${place.name}</strong><br>${place.address}<br>Rating: ${place.rating || 'N/A'} (${place.userRatingsTotal || 0} reviews)`;
+            
+                li.innerHTML = `<strong>${place.name}</strong><br>${place.price}$<br>${place.address}<br>Rating: ${place.rating || 'N/A'} (${place.userRatingsTotal || 0} reviews)`;
                 placesList.appendChild(li);
             });
         } catch (err) {
