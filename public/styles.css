@@ -1,39 +1,115 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Body */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-  }
-  
-  #form-container {
-    margin: 20px auto;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  input, button {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  button {
-    cursor: pointer;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  #results ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  #results li {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.2em;
+  color: #6c757d;
+  margin-bottom: 30px;
+}
+
+/* Form Container */
+#form-container {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #ced4da;
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Results */
+#results {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#places-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#places-list li {
+  background-color: #f1f3f5;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#places-list li strong {
+  display: block;
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+#places-list li span {
+  font-size: 1em;
+  color: #6c757d;
+}
+
+#places-list li br {
+  margin-bottom: 10px;
+}

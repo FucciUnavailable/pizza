@@ -1,7 +1,9 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const { connectToDatabase, getPool } = require('./sql'); // Import the DB module
 const sql = require('mssql'); // SQL Server library
 
 const app = express();
@@ -10,18 +12,10 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-// SQL Server connection configuration
-const sqlConfig = {
-    user: process.env.DB_USER,          // Your SQL Server username
-    password: process.env.DB_PASSWORD,  // Your SQL Server password
-    database: process.env.DB_NAME,      // Your database name
-    server: process.env.DB_SERVER,      // Your server name or IP
-    options: {
-        encrypt: true,                  // Set to false if not using Azure
-        trustServerCertificate: true    // Required for self-signed certs
-    }
-};
+// Connect to SQL Server before starting the API
+connectToDatabase();
 
+// API to fetch places from Google Places API and store in SQL Server
 app.get('/api/places', async (req, res) => {
     const { lat, lng, radius, keyword } = req.query;
 
@@ -49,30 +43,35 @@ app.get('/api/places', async (req, res) => {
             userRatingsTotal: place.user_ratings_total || null,
             latitude: place.geometry.location.lat,
             longitude: place.geometry.location.lng,
-            priceLevel: place.price_level || null // Include price_level
+            priceLevel: place.price_level || null
         }));
 
-        // Connect to SQL Server
-        const pool = await sql.connect(sqlConfig);
+        const pool = getPool();
+        if (!pool) {
+            return res.status(500).json({ error: 'Database connection not established' });
+        }
 
         // Clear the Restaurants table
         await pool.request().query(`DELETE FROM Restaurants`);
 
-        // Insert new data
-        for (const place of places) {
-            await pool.request()
+        // Use Promise.all to insert places concurrently
+        const insertPromises = places.map(place => {
+            return pool.request()
                 .input('name', sql.NVarChar, place.name)
                 .input('address', sql.NVarChar, place.address)
                 .input('rating', sql.Float, place.rating)
                 .input('userRatingsTotal', sql.Int, place.userRatingsTotal)
                 .input('latitude', sql.Float, place.latitude)
                 .input('longitude', sql.Float, place.longitude)
-                .input('priceLevel', sql.Int, place.priceLevel) // Insert price_level
+                .input('priceLevel', sql.Int, place.priceLevel)
                 .query(`
                     INSERT INTO Restaurants (Name, Address, Rating, UserRatingsTotal, Latitude, Longitude, PriceLevel)
                     VALUES (@name, @address, @rating, @userRatingsTotal, @latitude, @longitude, @priceLevel)
                 `);
-        }
+        });
+
+        // Wait for all insert operations to complete
+        await Promise.all(insertPromises);
 
         // Send the results back to the frontend
         res.json(places);
@@ -82,4 +81,5 @@ app.get('/api/places', async (req, res) => {
     }
 });
 
+// Start the server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
