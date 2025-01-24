@@ -17,7 +17,7 @@ connectToDatabase();
 
 // API to fetch places from Google Places API and store in SQL Server
 app.get('/api/places', async (req, res) => {
-    const { lat, lng, radius, keyword } = req.query;
+    const { lat, lng, radius, keyword, limit = 5 } = req.query; // Default limit to 5
 
     if (!lat || !lng || !radius || !keyword) {
         return res.status(400).json({ error: 'Missing required parameters' });
@@ -36,6 +36,7 @@ app.get('/api/places', async (req, res) => {
             }
         });
 
+        // Map the places to the format you want
         const places = placesResponse.data.results.map(place => ({
             name: place.name,
             address: place.vicinity,
@@ -46,6 +47,9 @@ app.get('/api/places', async (req, res) => {
             priceLevel: place.price_level || null
         }));
 
+        // Limit the number of results based on the user-defined `limit`
+        const limitedPlaces = places.slice(0, parseInt(limit));
+
         const pool = getPool();
         if (!pool) {
             return res.status(500).json({ error: 'Database connection not established' });
@@ -55,7 +59,7 @@ app.get('/api/places', async (req, res) => {
         await pool.request().query(`DELETE FROM Restaurants`);
 
         // Use Promise.all to insert places concurrently
-        const insertPromises = places.map(place => {
+        const insertPromises = limitedPlaces.map(place => {
             return pool.request()
                 .input('name', sql.NVarChar, place.name)
                 .input('address', sql.NVarChar, place.address)
@@ -74,7 +78,7 @@ app.get('/api/places', async (req, res) => {
         await Promise.all(insertPromises);
 
         // Send the results back to the frontend
-        res.json(places);
+        res.json(limitedPlaces);
     } catch (error) {
         console.error('Error:', error.message);
         res.status(500).json({ error: 'An error occurred while processing the request' });
